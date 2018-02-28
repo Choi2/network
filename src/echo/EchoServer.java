@@ -1,10 +1,13 @@
 package echo;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EchoServer {
 	private static final int SERVER_PORT = 6000;
@@ -15,6 +18,7 @@ public class EchoServer {
 		try {
 			//1. 서버소켓 생성
 			serverSocket = new ServerSocket();
+			List<Writer> listWriters = new ArrayList<Writer>();
 			
 			//2. 바인딩(Binding)
 			String localhostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -24,7 +28,7 @@ public class EchoServer {
 			while( true ) {
 				//3. 연결 요청 기다림(accept)
 				Socket socket = serverSocket.accept(); // blocking
-				new EchoServerReceiveThread( socket ).start();
+				new EchoServerReceiveThread(socket, listWriters).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
